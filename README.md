@@ -22,7 +22,7 @@ Nonparametric Bayesian Double Articulation Analyzer(NPB-DAA)
 
 	sudo apt-get install 
   
-上記でのコマンドでのインストール
+上記のコマンドでのインストール
 　　	
 ・python　2.7.3
 
@@ -36,7 +36,7 @@ Nonparametric Bayesian Double Articulation Analyzer(NPB-DAA)
 
 	sudo pip install
   
-上記でのコマンドでのインストール
+上記のコマンドでのインストール
   
 ・Paver	1.2.4
 

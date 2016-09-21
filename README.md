@@ -20,7 +20,10 @@ Nonparametric Bayesian Double Articulation Analyzer(NPB-DAA)
 
 ・Ubuntu 12.04.5 LTS 
 
----------apt-get--------------------------------
+	sudo apt-get install 
+  
+上記でのコマンドでのインストール
+　　	
 ・python　2.7.3
 
 ・numpy　1.6.1 
@@ -31,8 +34,10 @@ Nonparametric Bayesian Double Articulation Analyzer(NPB-DAA)
 
 ・scikit-learn	0.10
 
-----------pip----------------------------------------
-
+	sudo pip install
+  
+上記でのコマンドでのインストール
+  
 ・Paver	1.2.4
 
 ・pyzmq==14.4.0/14.5.0/14.6.0 (14.6.0)
@@ -46,4 +51,4 @@ Nonparametric Bayesian Double Articulation Analyzer(NPB-DAA)
 #Troubleshooting
   現在，動作確認できている環境，また，エラーの解決方法が記述されています．
 
-  [ https://docs.google.com/document/d/1fwcnwNEZNvc1vVZvyRJsMtPdC_FNAtY9S3dyS5CVxZQ/edit?usp=sharing ]
+  [エラー記述](https://docs.google.com/document/d/1fwcnwNEZNvc1vVZvyRJsMtPdC_FNAtY9S3dyS5CVxZQ/edit?usp=sharing)

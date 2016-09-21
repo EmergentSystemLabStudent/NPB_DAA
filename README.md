@@ -49,6 +49,6 @@ Nonparametric Bayesian Double Articulation Analyzer(NPB-DAA)
   使い方は NPB_DAA/README に記述しています． 
 
 #Troubleshooting
-  現在，動作確認できている環境，また，エラーの解決方法が記述されています．
+  下記のリンクでは，動作確認できている環境とエラーの解決方法が記述されています．
 
-  [エラー記述](https://docs.google.com/document/d/1fwcnwNEZNvc1vVZvyRJsMtPdC_FNAtY9S3dyS5CVxZQ/edit?usp=sharing)
+  [エラー記述リンク](https://docs.google.com/document/d/1fwcnwNEZNvc1vVZvyRJsMtPdC_FNAtY9S3dyS5CVxZQ/edit?usp=sharing)

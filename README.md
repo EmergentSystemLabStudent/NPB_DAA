@@ -8,9 +8,9 @@ Nonparametric Bayesian Double Articulation Analyzer(NPB-DAA)
 ・NPB_DAA/README - NPB_DAAの使い方が記述されているPDFが入っています．
   
   
-・NPB_DAA/pyhsmm -  ソースはGitの[ https://github.com/mattjj/pyhsmm ] のものである．
+・NPB_DAA/pyhsmm -  ソースはGithubの[ https://github.com/mattjj/pyhsmm ] のものである．
 
-どのバージョンかは， NPB_DAA/README に記述されています．  
+どのpyhsmmのバージョンかは， NPB_DAA/README に記述されています．  
   
 
 ・NPB_DAA/dahsmm - NPB-DAAのソースが入っています．	
@@ -23,7 +23,7 @@ Nonparametric Bayesian Double Articulation Analyzer(NPB-DAA)
 	sudo apt-get install 
   
 上記のコマンドでのインストールするパッケージ　
-  
+
 ・[パッケージ名　バージョン]
   　　	
 ・python　2.7.3
@@ -53,4 +53,4 @@ Nonparametric Bayesian Double Articulation Analyzer(NPB-DAA)
 #Troubleshooting
   下記のリンクでは，動作確認できている環境とエラーの解決方法が記述されています．
 
-  [エラー記述リンク](https://docs.google.com/document/d/1fwcnwNEZNvc1vVZvyRJsMtPdC_FNAtY9S3dyS5CVxZQ/edit?usp=sharing)
+  [動作確認環境エラー記述リンク](https://docs.google.com/document/d/1fwcnwNEZNvc1vVZvyRJsMtPdC_FNAtY9S3dyS5CVxZQ/edit?usp=sharing)

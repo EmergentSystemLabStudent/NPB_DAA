@@ -6,6 +6,7 @@ This generative model is called hiererichel Dirichlet process hidden language mo
 
 # Description
 ・NPB_DAA/README - There is a NPB-DAA tutorial in PDF.(In Japanese. English version is coming soon.)
+  
 ・NPB_DAA/pyhsmm - Python Library for HDP-HSMM. You can get it at [ https://github.com/mattjj/pyhsmm ]. (Please check this VERSION at README)
   
 ・NPB_DAA/dahsmm - Python code for NPB-DAA
@@ -43,6 +44,7 @@ If you are in trouble, please look at this document. You can get information abo
 
 # References
 ・Taniguchi, Tadahiro, Shogo Nagasaka, and Ryo Nakashima. [Nonparametric Bayesian double articulation analyzer for direct language acquisition from continuous speech signals](http://ieeexplore.ieee.org/document/7456220/?arnumber=7456220), 2015.
+  
 ・Matthew J. Johnson and Alan S. Willsky. [Bayesian Nonparametric Hidden Semi-Markov Models](http://www.jmlr.org/papers/volume14/johnson13a/johnson13a.pdf). Journal of Machine Learning Research (JMLR), 14:673–701, 2013.
 
 # Authors

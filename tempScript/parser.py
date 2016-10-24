@@ -4,6 +4,7 @@ import numpy as np
 import argparse,os,sys
 import Summary
 from paver.easy import pushd
+import shutil
 ##parse する
 #=====================summary　class=====================#
 
@@ -24,7 +25,7 @@ def main():
         if var =='n':
             print("this program finish")
             sys.exit()
-        os.rmdir(figs_dir)
+        shutil.rmtree(figs_dir)
     os.mkdir(figs_dir)
     summary = Summary.Summary("./"+args.resultdata)
     #evaluation_result save
@@ -32,6 +33,12 @@ def main():
             #gen confused matrix
             summary.letter_confused_matrix()
             summary.state_confused_matrix()
+            # gen PER and WER
+            summary.culPER()
+            summary.culWER()
+            # gen adjusted rand index
+            summary.a_rand_index(summary.sample_letters, summary.input_data, 'l')
+            summary.a_rand_index(summary.sample_states, summary.input_data2, 's')
 
 if __name__ == '__main__':
     main()

@@ -37,12 +37,14 @@ def main():
         #gen confused matrix
         summary.letter_confused_matrix()
         summary.state_confused_matrix()
+
         #gen PER and WER
         summary.culPER()
         summary.culWER()
         #gen adjusted rand index
         summary.a_rand_index(summary.sample_letters,summary.input_data,'l')
         summary.a_rand_index(summary.sample_states,summary.input_data2,'s')
+
         #gen word list
         with open('WordList.txt',"w") as f:
             for num, key in enumerate(summary.word_list):

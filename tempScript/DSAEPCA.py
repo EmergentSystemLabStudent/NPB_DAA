@@ -7,6 +7,7 @@ matplotlib.use('tkagg')
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.decomposition import PCA
+import os
 
 # =================
 #  主成分分析 (PCA)
@@ -18,9 +19,16 @@ def main():
     # データ・セット読み込み#
     dataset =[]
     colorlist = ["r", "g", "b", "c", "m", "y", "k", "indigo","darkgreen","pink","gray"]
+    indcolorlist=["r","b"]
     namesnums = [["1a", "1b"], ["2a", "2b"], ["3a", "3b"], ["4a", "4b"], ["5a", "5b"], ["6a", "6b"], ["7a", "7b"],
                 ["8a", "8b"], ["9a", "9b"], ["za", "zb"], ["oa", "ob"]]
+
     datalen=[[]for i in range(11)]
+
+    results_dir = "summaryDSAEPCA"
+
+    if not os.path.isdir(results_dir):
+        os.makedirs(results_dir)
 
     for l, names in enumerate(namesnums):
         for i, name in enumerate(names):
@@ -47,21 +55,37 @@ def main():
     X_pca = pca.transform(dataset) # データに対して削減後のベクトルを生成
     #print(X_pca)
     fig = plt.figure()
+    indfig = plt.figure()
     data = fig.add_subplot(111)#データの確保するための宣言
+
     sum = 0
     datalen[0][0] = datalen[0][0] - 1
 
     for i,samedatas in enumerate(datalen):
         print(i)
-        for setnumber in samedatas:
+        inddata = indfig.add_subplot(111)  # データの確保するための宣言
+        for l,setnumber in enumerate(samedatas):
             print(colorlist[i])
             print(X_pca[sum:sum+setnumber,0])
-            data.scatter(X_pca[sum:sum+setnumber,0],X_pca[sum:sum+setnumber,1], c=colorlist[i],edgecolors=colorlist[i])
+            if l == 0 :
+                data.scatter(X_pca[sum:sum+setnumber,0],X_pca[sum:sum+setnumber,1], c=colorlist[i],edgecolors=colorlist[i],label=(namesnums[i][0]).rstrip("a"))
+            else:
+                data.scatter(X_pca[sum:sum + setnumber, 0], X_pca[sum:sum + setnumber, 1], c=colorlist[i],edgecolors=colorlist[i])
+
+            inddata.scatter(X_pca[sum:sum + setnumber, 0], X_pca[sum:sum + setnumber, 1], c=indcolorlist[l],
+                         edgecolors=indcolorlist[l],label=namesnums[i][l])
             sum = sum + setnumber
+        inddata.set_xlabel('first')
+        inddata.set_ylabel('Second')
+        inddata.legend(loc="lower right")
+        indfig.savefig(results_dir+"/"+"ind"+str(i+1)+ ".png")
+        indfig.clf()
 
     data.set_xlabel('first')
     data.set_ylabel('Second')
-    plt.show()
+    #plt.show()
+    data.legend(loc="lower right")
+    fig.savefig(results_dir+"/""DSAE8PCA"+".png")
 
 
 if __name__ == '__main__':

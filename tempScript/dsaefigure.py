@@ -6,7 +6,7 @@ import matplotlib
 matplotlib.use('tkagg')
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.decomposition import PCA
+import os
 
 def main():
     # データ・セット読み込み#
@@ -14,14 +14,19 @@ def main():
     # 36フレーム
 
     fig = plt.figure()
-    data = fig.add_subplot(111)  # データの確保するための宣言
-    color = ["grey","y"]
-    namesnum=[["1a","1b"],["2a","2b"],["3a","3b"],["4a","4b"]]
+    #data = fig.add_subplot(111)  # データの確保するための宣言
+    color = ["grey","r"]
+    namesnum=[["1a","1b"],["2a","2b"],["3a","3b"],["4a","4b"],["5a","5b"],["6a","6b"],["7a","7b"],["8a","8b"],["9a","9b"],["za","zb"],["oa","ob"]]
+    results_dir ="summaryDsaefig"
+
+    if not os.path.isdir(results_dir):
+         os.makedirs(results_dir)
 
     for l,names in enumerate(namesnum):
         for i,name in enumerate(names):
             print(name)
             dataset = []
+            data = fig.add_subplot(111)  # データの確保するための宣言
             with open("./DATA/"+str(name)+".txt") as f:
                  for line in f.readlines():
                     line = line.rstrip()
@@ -29,6 +34,7 @@ def main():
                     #print(type(line))
                     line= np.array(line,dtype=float)
                     dataset.append(line)
+
             #print(dataset[0][0])
             dataset=np.array(dataset,dtype=float)
             #data.scatter(X_pca[:,0],X_pca[:,1], c="pink",edgecolors="red")
@@ -55,7 +61,9 @@ def main():
         data.set_xlabel('frame')
         data.set_ylabel('FeatureValue')
         #plt.show()
-        plt.savefig(filename+str(names[0].rstrip("a"))+".png")
+        plt.savefig(results_dir+"/"+filename+str(names[0].rstrip("a"))+".png")
+        plt.clf()
+
 
 if __name__ == '__main__':
     main()

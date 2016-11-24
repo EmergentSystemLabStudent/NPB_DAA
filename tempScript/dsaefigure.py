@@ -47,6 +47,7 @@ def main():
             #data.plot(frame, dataset[:, 5], label="PF", color="k")
             #data.plot(frame, dataset[:, 6], label="PF", color="y")
             #data.plot(frame, dataset[:, 7], label="PF", color="c")
+
             print(dataset[:,0])
             frame = np.arange(0, dataset.shape[0], 1)
             data.plot(frame, dataset[:,0], label="PF", color=color[i])

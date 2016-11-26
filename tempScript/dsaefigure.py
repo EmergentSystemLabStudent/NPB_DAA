@@ -27,11 +27,13 @@ def main():
             print(name)
             dataset = []
             data = fig.add_subplot(111)  # データの確保するための宣言
-            with open("./DATA/"+str(name)+".txt") as f:
+            with open("./8DDSAE/"+str(name)+".txt") as f:
                  for line in f.readlines():
+                    print line
                     line = line.rstrip()
-                    line = line.split("	")
-                    #print(type(line))
+                    line = line.split("\t")
+                    print line
+                    print(type(line))
                     line= np.array(line,dtype=float)
                     dataset.append(line)
 

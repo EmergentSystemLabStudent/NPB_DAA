@@ -3,6 +3,7 @@ import numpy as np
 from sklearn import metrics
 import matplotlib
 matplotlib.use('Agg') #in the case of perform on server
+import matplotlib.pyplot as plt
 import pickle
 import json
 import csv
@@ -20,11 +21,12 @@ class Summary(object):
         with open(dirpath+'/'+'sample_word_list.txt') as f3:
             self.word_list = pickle.load(f3)
         self.data_size = self.params['DATA_N']
-        print (self.data_size)
-        self.input_data = [np.loadtxt("./LABEL/" + i + ".lab") for i in self.fig_title]#label change here　ファイルのテキスト
-        self.input_data2 = [np.loadtxt("./LABEL/" + i + ".lab2") for i in self.fig_title]#label change here
+        #print (self.data_size)
+        #self.input_data = [np.loadtxt("./LABEL/" + i + ".lab") for i in self.fig_title]#label change hereファイルのテキスト
+        self.input_data2 = [np.loadtxt("./LABEL/" + i + ".lab") for i in self.fig_title]#label change here
+        print (self.input_data2)
         self.sample_states = [np.loadtxt(dirpath+'/'+'sample_states_%d.txt' % i) for i in range(self.params['DATA_N'])]
-        self.sample_letters = [np.loadtxt(dirpath+'/'+'sample_letters_%d.txt' % i) for i in range(self.params['DATA_N'])] #%iをループで記述している．
+        #self.sample_letters = [np.loadtxt(dirpath+'/'+'sample_letters_%d.txt' % i) for i in range(self.params['DATA_N'])] #%iをループで記述している．
         self.state_ranges = []
 
         for i in range(self.params['DATA_N']):#ファイル読み込み
@@ -40,12 +42,14 @@ class Summary(object):
 
         # --------------------------------------letter&state confused matrix function--------------------------------------#
     def letter_confused_matrix(self):
+
         #change here
         a = []
         i = []
         u=[]
         e=[]
         o=[]
+
 
         #ラベル付けしたときの番号を振る。inudataはラベル　
         for key, key2 in zip(self.sample_letters, self.input_data):
@@ -98,8 +102,123 @@ class Summary(object):
         #confused_matrix_l.csvで認識がちゃんと行われているかがわかる
         #また，同じラベルだと判定した場合，最後のラベルとしてにんしきする．
 
+
     def state_confused_matrix(self):
-        #大体同じである．
+
+        one = []
+        two = []
+        three = []
+        four = []
+        five = []
+        six = []
+        seven = []
+        eight = []
+        nine = []
+        o =[]
+        zero=[]
+        s=[]#何も発音がないところ
+
+        for key, key2 in zip(self.sample_states, self.input_data2):
+            for key3, key4 in zip(key[self.maxlikelihood[1]], key2):
+                if key4 == 1:
+                    one.append(key3)
+                elif key4 == 2:
+                    two.append(key3)
+                elif key4 == 3:
+                    three.append(key3)
+                elif key4 == 4:
+                    four.append(key3)
+                elif key4 == 5:
+                    five.append(key3)
+                elif key4 == 6:
+                    six.append(key3)
+                elif key4 == 7:
+                    seven.append(key3)
+                elif key4 == 8:
+                    eight.append(key3)
+                elif key4 == 9:
+                    nine.append(key3)
+                elif key4 == 10:
+                    zero.append(key3)
+                elif key4 == 11:
+                    o.append(key3)
+                elif key4 == -1:
+                    s.append(key3)
+
+
+            l_max = max(one + two + three + four + five + six + seven + eight + nine + o + zero)
+            one_count = []
+            two_count = []
+            three_count = []
+            four_count = []
+            five_count = []
+            six_count = []
+            seven_count = []
+            eight_count = []
+            nine_count = []
+            zero_count = []
+            o_count = []
+            s_count = []
+
+            for num in range(int(l_max) + 1):
+                one_count.append(one.count(num))
+                two_count.append(two.count(num))
+                three_count.append(three.count(num))
+                four_count.append(four.count(num))
+                five_count.append(five.count(num))
+                six_count.append(six.count(num))
+                seven_count.append(seven.count(num))
+                eight_count.append(eight.count(num))
+                nine_count.append(nine.count(num))
+                zero_count.append(zero.count(num))
+                o_count.append(o.count(num))
+                s_count.append(s.count(num))
+
+            f = open('confused_matrix_s.csv', 'w')
+            writer = csv.writer(f)
+            writer.writerow(["word|state_label"] + range(int(l_max) + 1))
+            writer.writerow(["one"] + one_count)
+            writer.writerow(["two"] + two_count)
+            writer.writerow(["three"] + three_count)
+            writer.writerow(["four"] + four_count)
+            writer.writerow(["five"] + five_count)
+            writer.writerow(["six"] + six_count)
+            writer.writerow(["seven"] + seven_count)
+            writer.writerow(["eight"] + eight_count)
+            writer.writerow(["nine"] + nine_count)
+            writer.writerow(["zero"] + zero_count)
+            writer.writerow(["o"] + o_count)
+            writer.writerow(["s"] + s_count)
+
+            writer.writerow([])
+            writer.writerow(["one_label:" + str(one_count.index(max(one_count))),
+                                     "two_label:" + str(two_count.index(max(two_count))),
+                                     "three_label:" + str(three_count.index(max(three_count))),
+                                     "four_label:" + str(four_count.index(max(four_count))),
+                                     "five_label:" + str(five_count.index(max(five_count))),
+                                     "six_label:" + str(six_count.index(max(six_count))),
+                                     "seven_label:" + str(seven_count.index(max(seven_count))),
+                                     "eight_label:" + str(eight_count.index(max(eight_count))),
+                                     "nine_label:" + str(nine_count.index(max(nine_count))),
+                                     "zero_label:" + str(nine_count.index(max(nine_count))),
+                                     "o_label:" + str(o_count.index(max(o_count))),
+                                     "s_label:" + str(s_count.index(max(s_count)))
+                             ])
+
+            self.s_label_dic["1"] = one_count.index(max(one_count))
+            self.s_label_dic["2"] = two_count.index(max(two_count))
+            self.s_label_dic["3"] = three_count.index(max(three_count))
+            self.s_label_dic["4"] = four_count.index(max(four_count))
+            self.s_label_dic["5"] = five_count.index(max(five_count))
+            self.s_label_dic["6"]  = six_count.index(max(six_count))
+            self.s_label_dic["7"] = seven_count.index(max(seven_count))
+            self.s_label_dic["8"] = eight_count.index(max(eight_count))
+            self.s_label_dic["9"] = nine_count.index(max(nine_count))
+            self.s_label_dic["z"] = nine_count.index(max(nine_count))
+            self.s_label_dic["o"] = o_count.index(max(o_count))
+            self.s_label_dic["s"] = s_count.index(max(s_count))
+
+        """
         aioi = []
         aue = []
         ao = []
@@ -118,40 +237,41 @@ class Summary(object):
                     ie.append(key3)
                 elif key4 == 4:
                     uo.append(key3)
-                    l_max = max(aioi + aue + ao + ie + uo)
-                    aioi_count = []
-                    aue_count = []
-                    ao_count = []
-                    ie_count = []
-                    uo_count = []
 
-                    for num in range(int(l_max) + 1):
-                        aioi_count.append(aioi.count(num))
-                        aue_count.append(aue.count(num))
-                        ao_count.append(ao.count(num))
-                        ie_count.append(ie.count(num))
-                        uo_count.append(uo.count(num))
+        l_max = max(aioi + aue + ao + ie + uo)
+        aioi_count = []
+        aue_count = []
+        ao_count = []
+        ie_count = []
+        uo_count = []
 
-                    f = open('confused_matrix_s.csv', 'w')
-                    writer = csv.writer(f)
-                    writer.writerow(["word|state_label"] + range(int(l_max) + 1))
-                    writer.writerow(["aioi"] + aioi_count)
-                    writer.writerow(["aue"] + aue_count)
-                    writer.writerow(["ao"] + ao_count)
-                    writer.writerow(["ie"] + ie_count)
-                    writer.writerow(["uo"] + uo_count)
-                    writer.writerow([])
-                    writer.writerow(["aioi_label:" + str(aioi_count.index(max(aioi_count))),
+        for num in range(int(l_max) + 1):
+                aioi_count.append(aioi.count(num))
+                aue_count.append(aue.count(num))
+                ao_count.append(ao.count(num))
+                ie_count.append(ie.count(num))
+                uo_count.append(uo.count(num))
+
+        f = open('confused_matrix_s.csv', 'w')
+        writer = csv.writer(f)
+        writer.writerow(["word|state_label"] + range(int(l_max) + 1))
+        writer.writerow(["aioi"] + aioi_count)
+        writer.writerow(["aue"] + aue_count)
+        writer.writerow(["ao"] + ao_count)
+        writer.writerow(["ie"] + ie_count)
+        writer.writerow(["uo"] + uo_count)
+        writer.writerow([])
+        writer.writerow(["aioi_label:" + str(aioi_count.index(max(aioi_count))),
                                      "aue_label:" + str(aue_count.index(max(aue_count))),
                                      "ao_label:" + str(ao_count.index(max(ao_count))),
                                      "ie_label:" + str(ie_count.index(max(ie_count))),
                                      "uo_label:" + str(uo_count.index(max(uo_count)))])
-                    self.s_label_dic["aioi"] = aioi_count.index(max(aioi_count))
-                    self.s_label_dic["aue"] = aue_count.index(max(aue_count))
-                    self.s_label_dic["ao"] = ao_count.index(max(ao_count))
-                    self.s_label_dic["ie"] = ie_count.index(max(ie_count))
-                    self.s_label_dic["uo"] = uo_count.index(max(uo_count))
-
+        self.s_label_dic["aioi"] = aioi_count.index(max(aioi_count))
+        self.s_label_dic["aue"] = aue_count.index(max(aue_count))
+        self.s_label_dic["ao"] = ao_count.index(max(ao_count))
+        self.s_label_dic["ie"] = ie_count.index(max(ie_count))
+        self.s_label_dic["uo"] = uo_count.index(max(uo_count))
+    """
     # --------------------------------------culculate PER and WER function--------------------------------------#
     def _levenshtein_distance(self, a, b):
         m = [[0] * (len(b) + 1) for i in range(len(a) + 1)]
@@ -192,7 +312,7 @@ class Summary(object):
 
             str_letter.append("".join(map(str, moji)))
         str_true = []
-        print(self.fig_title)
+        #print(self.fig_title)
 
         for key in self.fig_title:
             key = key.replace("2", "")#labe2の2を消す
@@ -238,8 +358,14 @@ class Summary(object):
         str_true = []
         #2とを無くして，_ splitで２つの配列に文化る
         for key in self.fig_title:
-            key = key.replace("2", "")
-            wl = key.split("_")#2次配列
+
+            key = key.replace("a", "")
+            key = key.replace("b", "")
+            print key
+            #key = key.replace("_", "")
+            wl = list(key)
+            print key
+            #wl = key.split("_")#2次配列
             twl = []
 
             for key2 in wl:
@@ -258,35 +384,103 @@ class Summary(object):
         # <<<<<<<<<<<<<<<<<<<<<manipulation functions end!!!>>>>>>>>>>>>>>>>>>>>>#
 
          # --------------------------------------compute adjusted rand index--------------------------------------#
-        def a_rand_index(self, sample_data, true_data, char):
-            #ラベルと推定データを引数
-            RIs = []
-            #
-            for idx in range(len(sample_data[0])):#フレーム数のfor文
-                true = []
-                sample = []
-                for key, key2 in zip(sample_data, true_data):#ラベルと推定データの比較のfor文
-                    sample.extend(key[idx])#extendは連結する関数 どの状態でも
-                    true.extend(key2)
-                ris = metrics.adjusted_rand_score(true, sample)
-                #ARIスコア エスティメーションでの結果が出力される．ここが一番大事かも
-                #ARI= (RI - Expected_RI)/(最大（RI ) - Expected_RI )
-                #ARIの意味 Rand Index
-                RIs.append(ris)
-
-            np.savetxt("aRIs_" + char + ".txt", RIs)
+    def a_rand_index(self, sample_data, true_data, char):
+        #ラベルと推定データを引数
+        #char はテキストネームだけ
+        RIs = []
+        print len(sample_data)
+        print len(true_data)
+        for idx in range(len(sample_data[0])):#フレーム数のfor文
             true = []
             sample = []
-            #ここまで
-            for key, key2 in zip(sample_data, true_data):
-                sample.extend(key[self.maxlikelihood[1]])
+            for key, key2 in zip(sample_data, true_data):#ラベルと推定データの比較のfor文
+                sample.extend(key[idx])#extendは連結する関数 どの状態でも
                 true.extend(key2)
-            ri = metrics.adjusted_rand_score(true, sample)
-            str = "maxLk_adjusted_rand_index_" + char + ".txt"
-            f = open(str, 'w')
-            writer = csv.writer(f)
-            writer.writerow(["adjusted_rand_score", ri])
+                print key[idx]
+
+            ris = metrics.adjusted_rand_score(true, sample)
+            #ARIスコア エスティメーションでの結果が出力される．ここが一番大事かも
+            #ARI= (RI - Expected_RI)/(最大（RI ) - Expected_RI )
+            #ARIの意味 Rand Index
+            RIs.append(ris)
+        np.savetxt("aRIs_" + char + ".txt", RIs)#npのなかにsavetxtってのがるの初めて知った．
+
+        true = []
+        sample = []
+        #推定 dataと本当のデータのfor文 こっちの配列では最大の尤度である場所だけ．
+        for key, key2 in zip(sample_data, true_data):
+            sample.extend(key[self.maxlikelihood[1]])
+            #maxlikelihood の配列は値とインデックス名 エスティメーションごとに追加してる
+            true.extend(key2)#本当ラベルデータ figタイトル 追加
+        ri = metrics.adjusted_rand_score(true, sample)#saize違う
+
+        str = "maxLk_adjusted_rand_index_" + char + ".txt"
+        f = open(str, 'w')
+        writer = csv.writer(f)
+        writer.writerow(["adjusted_rand_score", ri])
+
+    # --------------------------------------write result_graph--------------------------------------#
+    # base_graph function#
+    def _plot_discreate_sequence(self, true_data, title, sample_data, label=u'', plotopts={}):
+        ax = plt.subplot2grid((10, 1), (1, 0))
+        plt.sca(ax)#Set the current axes to be a and return a 軸設定
+        ax.matshow([true_data], aspect='auto')#四角のやつを表示 正解data表示
+        plt.ylabel('Truth Label')
+        # label matrix
+        ax = plt.subplot2grid((10, 1), (2, 0), rowspan=8)
+        plt.suptitle(title)#titleの追加
+        plt.sca(ax)#軸設定
+        ax.matshow(sample_data, aspect='auto', **plotopts)#plotopts sample 番号はデータ番号と一致している
+        # write per 10 iterations(max_likelihood) label
+        """
+        for i in range(label.shape[0]):
+            for j in range(label.shape[1]):
+                if i%10==0 or i==99 or i==self.maxlikelihood[1]:
+                    if i==self.maxlikelihood[1]:
+                        ax.text(j, i+1.5, int(label[i][j]), ha='center', va='bottom', color = 'red', fontsize=8)
+                    else:
+                        ax.text(j, i+1.5, int(label[i][j]), ha='center', va='bottom', color = 'black', fontsize=8)
+                    ax.text(j, i+1.5, int(label[i][j]), ha='center', va='bottom', color = 'black', fontsize=8)
+        """
+        # write x&y label
+        plt.xlabel('Frame')
+        plt.ylabel('Iteration')
+        plt.xticks(())
+
+    # plot state_result graph#
+    def plot_states(self, idx):
+        self._plot_discreate_sequence(
+            self.input_data2[idx],
+            self.fig_title[idx],
+            self.sample_states[idx],
+            label=self.sample_states[idx]
+        )
+
+    # plot boundary graph#
+    def _plot_label_boundary(self, true_data, title, sample_data, label=u''):
+        boundaries = [[stop for state, (start, stop) in r] for r in sample_data]
+        size = boundaries[0][-1]
+        data = np.zeros((len(sample_data), size))
+        for i, b in enumerate(boundaries):
+            for x in b[:-1]:
+                data[i, x] = 1.0
+        self._plot_discreate_sequence(true_data, title, data, label, plotopts={'cmap': 'Greys'})
+
+    def plot_state_boundaries(self, idx):
+        self._plot_label_boundary(
+            self.input_data2[idx],
+            self.fig_title[idx],
+            self.state_ranges[idx],
+            label=self.sample_states[idx]
+        )
+
+    # plot letter_result graph#
+    def plot_letters(self, idx):
+        self._plot_discreate_sequence(
+            self.input_data[idx],
+            self.fig_title[idx],
+            self.sample_letters[idx],
+            label=self.sample_letters[idx]
+        )
 
 
-
-                # --------------------------------------write result_graph--------------------------------------#

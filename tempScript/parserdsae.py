@@ -50,7 +50,7 @@ def main():
             for k in range(int(l)):
                 print (str(summarydata[k + length]).rstrip('[]').replace("\', \'","\t"))+"\n"
                 #fs.write((str(summarydata[k+length,:]).strip('[]')).replace("\n","").replace("\n","").replace(" ","\t")+"\n")
-                fs.write((str(summarydata[k + length]).strip('[]\'').replace("\', \'","\t"))+"\n")
+                fs.write((str(summarydata[k + length]).strip('[]\'').replace("\', \'","	"))+"\n")
             length += k
 
 

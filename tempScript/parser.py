@@ -53,7 +53,7 @@ def main():
 
             # gen adjusted rand index
             #summary.a_rand_index(summary.sample_letters, summary.input_data, 'l')
-            #summary.a_rand_index(summary.sample_states, summary.input_data2, 's')
+            summary.a_rand_index(summary.sample_states, summary.input_data2, 's')
 
             # gen word list
             with open('WordList.txt', "w") as f:

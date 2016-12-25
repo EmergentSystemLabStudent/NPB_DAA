@@ -32,7 +32,7 @@ def main():
 
     for l, names in enumerate(namesnums):
         for i, name in enumerate(names):
-            with open("./DATA/"+name+".txt") as f:
+            with open("./8DDSAE16bit/"+name+".txt") as f:
                 for n,line in enumerate(f.readlines()):
                     line = line.rstrip()
                     line = line.split("	")

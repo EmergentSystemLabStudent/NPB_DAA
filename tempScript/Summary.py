@@ -22,11 +22,11 @@ class Summary(object):
             self.word_list = pickle.load(f3)
         self.data_size = self.params['DATA_N']
         #print (self.data_size)
-        #self.input_data = [np.loadtxt("./LABEL/" + i + ".lab") for i in self.fig_title]#label change hereファイルのテキスト
+        self.input_data = [np.loadtxt("./LABEL/" + i + ".lab2") for i in self.fig_title]#label change hereファイルのテキスト
         self.input_data2 = [np.loadtxt("./LABEL/" + i + ".lab") for i in self.fig_title]#label change here
-        print (self.input_data2)
+        #print (self.input_data2)
         self.sample_states = [np.loadtxt(dirpath+'/'+'sample_states_%d.txt' % i) for i in range(self.params['DATA_N'])]
-        #self.sample_letters = [np.loadtxt(dirpath+'/'+'sample_letters_%d.txt' % i) for i in range(self.params['DATA_N'])] #%iをループで記述している．
+        self.sample_letters = [np.loadtxt(dirpath+'/'+'sample_letters_%d.txt' % i) for i in range(self.params['DATA_N'])] #%iをループで記述している．
         self.state_ranges = []
 
         for i in range(self.params['DATA_N']):#ファイル読み込み
@@ -44,61 +44,137 @@ class Summary(object):
     def letter_confused_matrix(self):
 
         #change here
-        a = []
-        i = []
-        u=[]
-        e=[]
-        o=[]
+        one = []
+        two = []
+        three = []
+        four = []
+        five = []
+        six = []
+        seven = []
+        eight = []
+        nine = []
+        o = []
+        zero = []
+        s = []  # 何も発音がないところ
 
 
         #ラベル付けしたときの番号を振る。inudataはラベル　
         for key, key2 in zip(self.sample_letters, self.input_data):
            #print key
            #print key[self.maxlikelihood[1]]#最大尤度のself.sample_lettersを抜き取っている
-           for key3, key4 in zip(key2,key[self.maxlikelihood[1]]):#ここのkey2でリストを分解するのでラベル中の値が入る
-                if key3 == 0:#ラベルづけで設定した値
-                    a.append(key4)#sample_lettesの最大尤度のインデックスの値のラベル番号　推定値
-                    #print a
-                elif key3 == 1:
-                    i.append(key4)
-                elif key3 == 2:
-                    u.append(key4)
-                elif key3 == 3:
-                    e.append(key4)
-                elif key3 == 4:
-                    o.append(key4)
+           for key3, key4 in zip(key[self.maxlikelihood[1]],key2):#ここのkey2でリストを分解するのでラベル中の値が入る
+                #if key3 == 0:#ラベルづけで設定した値
+                #    a.append(key4)#sample_lettesの最大尤度のインデックスの値のラベル番号　推定値
+                if key4 == 1:
+                    one.append(key3)
+                elif key4 == 2:
+                    two.append(key3)
+                elif key4 == 3:
+                    three.append(key3)
+                elif key4 == 4:
+                    four.append(key3)
+                elif key4 == 5:
+                    five.append(key3)
+                elif key4 == 6:
+                    six.append(key3)
+                elif key4 == 7:
+                    seven.append(key3)
+                elif key4 == 8:
+                    eight.append(key3)
+                elif key4 == 9:
+                    nine.append(key3)
+                elif key4 == 10:
+                    zero.append(key3)
+                elif key4 == 11:
+                    o.append(key3)
+                elif key4 == -1:
+                    s.append(key3)
 
-        l_max = max(a + i + u + e + o)# 全リストの中から最大値つまり、ラベルの最後の番号
-        a_count = []
-        i_count = []
-        u_count = []
-        e_count = []
+
+        l_max = max(one + two + three + four + five + six + seven + eight + nine + o + zero+s)# 全リストの中から最大値つまり、ラベルの最後の番号
+
+        one_count = []
+        two_count = []
+        three_count = []
+        four_count = []
+        five_count = []
+        six_count = []
+        seven_count = []
+        eight_count = []
+        nine_count = []
+        zero_count = []
         o_count = []
+        s_count = []
+        # 引数で指定したオブジェクトが持つ値がいくつの要素に含まれているのかを返します
 
         for num in range(int(l_max)+1):
-            a_count.append(a.count(num))#引数で指定したオブジェクトが持つ値がいくつの要素に含まれているのかを返します。
-            print a_count
+            """
+            a_count.append(a.count(num))
             i_count.append(i.count(num))
             u_count.append(u.count(num))
             e_count.append(e.count(num))
             o_count.append(o.count(num))
+            """
+            one_count.append(one.count(num))
+            two_count.append(two.count(num))
+            three_count.append(three.count(num))
+            four_count.append(four.count(num))
+            five_count.append(five.count(num))
+            six_count.append(six.count(num))
+            seven_count.append(seven.count(num))
+            eight_count.append(eight.count(num))
+            nine_count.append(nine.count(num))
+            zero_count.append(zero.count(num))
+            o_count.append(o.count(num))
+            s_count.append(s.count(num))
 
         #confused_matrix_l.csvにはどれだけ間違ったが記述されていることになる
         f = open('confused_matrix_l.csv','w')
         writer = csv.writer(f)
         writer.writerow(["phone|letter_label"]+range(int(l_max)+1))#音素列の範囲
-        writer.writerow(["a"]+a_count)
-        writer.writerow(["i"]+i_count)
-        writer.writerow(["u"]+u_count)
-        writer.writerow(["e"]+e_count)
-        writer.writerow(["o"]+o_count)
+        writer.writerow(["one"] + one_count)
+        writer.writerow(["two"] + two_count)
+        writer.writerow(["three"] + three_count)
+        writer.writerow(["four"] + four_count)
+        writer.writerow(["five"] + five_count)
+        writer.writerow(["six"] + six_count)
+        writer.writerow(["seven"] + seven_count)
+        writer.writerow(["eight"] + eight_count)
+        writer.writerow(["nine"] + nine_count)
+        writer.writerow(["zero"] + zero_count)
+        writer.writerow(["o"] + o_count)
+        writer.writerow(["s"] + s_count)
         writer.writerow([])
-        writer.writerow(["a_label:"+str(a_count.index(max(a_count))),"i_label:"+str(i_count.index(max(i_count))),"u_label:"+str(u_count.index(max(u_count))),"e_label:"+str(e_count.index(max(e_count))),"o_label:"+str(o_count.index(max(o_count)))])
-        self.l_label_dic[a_count.index(max(a_count))]="a"
-        self.l_label_dic[i_count.index(max(i_count))]="i"
-        self.l_label_dic[u_count.index(max(u_count))]="u"
-        self.l_label_dic[e_count.index(max(e_count))]="e"
-        self.l_label_dic[o_count.index(max(o_count))]="o"
+
+        writer.writerow(["one_label:" + str(one_count.index(max(one_count))),
+                         "two_label:" + str(two_count.index(max(two_count))),
+                         "three_label:" + str(three_count.index(max(three_count))),
+                         "four_label:" + str(four_count.index(max(four_count))),
+                         "five_label:" + str(five_count.index(max(five_count))),
+                         "six_label:" + str(six_count.index(max(six_count))),
+                         "seven_label:" + str(seven_count.index(max(seven_count))),
+                         "eight_label:" + str(eight_count.index(max(eight_count))),
+                         "nine_label:" + str(nine_count.index(max(nine_count))),
+                         "zero_label:" + str(zero_count.index(max(zero_count))),
+                         "o_label:" + str(o_count.index(max(o_count))),
+                         "s_label:" + str(s_count.index(max(s_count)))
+                         ])
+
+        self.l_label_dic[one_count.index(max(one_count))]="1"
+        self.l_label_dic[two_count.index(max(two_count))]="2"
+        self.l_label_dic[three_count.index(max(three_count))]="3"
+        self.l_label_dic[four_count.index(max(four_count))]="4"
+        self.l_label_dic[five_count.index(max(five_count))] = "5"
+        self.l_label_dic[six_count.index(max(six_count))] = "6"
+        self.l_label_dic[seven_count.index(max(seven_count))] = "7"
+        self.l_label_dic[eight_count.index(max(eight_count))] = "8"
+        self.l_label_dic[nine_count.index(max(nine_count))] = "9"
+        self.l_label_dic[zero_count.index(max(zero_count))] = "z"
+        self.l_label_dic[s_count.index(max(s_count))] = "s"
+        self.l_label_dic[o_count.index(max(o_count))] = "o"
+
+
+
         #confused_matrix_l.csvで認識がちゃんと行われているかがわかる
         #また，同じラベルだと判定した場合，最後のラベルとしてにんしきする．
 
@@ -146,7 +222,7 @@ class Summary(object):
                     s.append(key3)
 
 
-            l_max = max(one + two + three + four + five + six + seven + eight + nine + o + zero)
+            l_max = max(one + two + three + four + five + six + seven + eight + nine + o + zero+s)
             one_count = []
             two_count = []
             three_count = []
@@ -191,6 +267,8 @@ class Summary(object):
             writer.writerow(["s"] + s_count)
 
             writer.writerow([])
+
+
             writer.writerow(["one_label:" + str(one_count.index(max(one_count))),
                                      "two_label:" + str(two_count.index(max(two_count))),
                                      "three_label:" + str(three_count.index(max(three_count))),
@@ -200,7 +278,7 @@ class Summary(object):
                                      "seven_label:" + str(seven_count.index(max(seven_count))),
                                      "eight_label:" + str(eight_count.index(max(eight_count))),
                                      "nine_label:" + str(nine_count.index(max(nine_count))),
-                                     "zero_label:" + str(nine_count.index(max(nine_count))),
+                                     "zero_label:" + str(zero_count.index(max(zero_count))),
                                      "o_label:" + str(o_count.index(max(o_count))),
                                      "s_label:" + str(s_count.index(max(s_count)))
                              ])
@@ -214,7 +292,7 @@ class Summary(object):
             self.s_label_dic["7"] = seven_count.index(max(seven_count))
             self.s_label_dic["8"] = eight_count.index(max(eight_count))
             self.s_label_dic["9"] = nine_count.index(max(nine_count))
-            self.s_label_dic["z"] = nine_count.index(max(nine_count))
+            self.s_label_dic["z"] = zero_count.index(max(zero_count))
             self.s_label_dic["o"] = o_count.index(max(o_count))
             self.s_label_dic["s"] = s_count.index(max(s_count))
 

@@ -15,8 +15,8 @@ def multi_plot_object(summary,idx,count):
     plt.savefig('sample_states_%d.png' % idx)
     summary.plot_state_boundaries(idx)
     plt.savefig('state_boundary_%d.png' % idx)
-    #summary.plot_letters(idx)
-    #plt.savefig('sample_letters_%d.png' % idx)
+    summary.plot_letters(idx)
+    plt.savefig('sample_letters_%d.png' % idx)
     plt.clf()
     count.value = count.value + 1
     print(summary.fig_title[idx], 'plot finish-->count:', count.value)#その状態のときの終了出力
@@ -52,7 +52,7 @@ def main():
             summary.culWER()
 
             # gen adjusted rand index
-            #summary.a_rand_index(summary.sample_letters, summary.input_data, 'l')
+            summary.a_rand_index(summary.sample_letters, summary.input_data, 'l')
             summary.a_rand_index(summary.sample_states, summary.input_data2, 's')
 
             # gen word list

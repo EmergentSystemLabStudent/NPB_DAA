@@ -4,14 +4,16 @@ import numpy as np
 import argparse,os,sys
 from paver.easy import pushd
 import shutil
+import subprocess
 
 
 def main():
 
     #setting 読み込み
-    fname= "setting"
-    summaryname = "./DSAEDATA/8.txt"
-    resultsDir = "8DDSAE"
+    fname= "./Nopower16DATA/16settingNopower"
+    summaryname = "./Nopower16DATA/16itDSAE8/8.txt"
+    resultsDir = "16bitDSAE8DATA"
+
     dataname = []
     summarydata = []
 
@@ -30,29 +32,39 @@ def main():
     #その名前でデータ渡す
 
     with open(summaryname) as fp:
-        print fp.readline()
         for n, line in enumerate(fp.readlines()):
             line = line.rstrip()
             line = line.split("\t")
             summarydata.append(line)
     #print summarydata[0]]
     #summarydata = np.array(summarydata).astype(np.float64)
-    print summarydata
+    #print summarydata
 
-    print summarydata[0]
+    print summarydata[10046]
     length = 0
+    print len(summarydata)
 
+
+    cmd = "sleep 0"
+    proc = subprocess.call(cmd, shell=True)
 
     for i ,l in zip(dataname[:,0],dataname[:,1]):
-        #print i
-        #print l
+
         with open(resultsDir +"/"+str(i)+ ".txt", "w") as fs:
             for k in range(int(l)):
+                print k
+                print l
+                print length
                 print (str(summarydata[k + length]).rstrip('[]').replace("\', \'","\t"))+"\n"
                 #fs.write((str(summarydata[k+length,:]).strip('[]')).replace("\n","").replace("\n","").replace(" ","\t")+"\n")
                 fs.write((str(summarydata[k + length]).strip('[]\'').replace("\', \'","	"))+"\n")
-            length += k
-
+            #print k
+            #print l
+            #print i
+            print i
+            print l
+            length = length + k + 1
+            print length
 
 if __name__ == '__main__':
     main()

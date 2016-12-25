@@ -10,14 +10,14 @@ import os
 import fnmatch
 
 def main():
-    foldername= "/Users/pro11/Desktop/DSAE/an/WAVDATA/TEXTDATANOPOWER"
+    foldername= "STREONospaceeditTXT"
     filenames = fnmatch.filter(os.listdir(foldername),"*.txt")
     print filenames
     #ファイルを読み込んで
     #ある結合ファイルに保管
-    resultfilename= "filename"
+
     Summary = 0
-    with open('BondWaveDataNopower.txt', mode='w') as fp,open('settingNopower.txt',mode='w') as fp2:
+    with open('BondWaveData16NopowerNospace.txt', mode='w') as fp,open('16settingNopowerNospace.txt',mode='w') as fp2:
         fp2.write("name" + "\t" + "line:" + "\n")
         for filename in filenames:
             with open(foldername+"/"+filename) as f:

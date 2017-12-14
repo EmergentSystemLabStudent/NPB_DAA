@@ -71,13 +71,19 @@ class DAHSMM(object):
 
     def resample_model(self):
         if self.parallel:
+            print "resample states parallel"
             self.resample_states_parallel()
         else:
+            print "resample states single"
             self.resample_states()
 
+        print "resample letter params"
         self.resample_letter_params()
+        print "resample dur dists"
         self.resample_dur_dists()
+        print "resample trans dist"
         self.resample_trans_dist()
+        print "resample init dist"
         self.resample_init_dist()
 
     def resample_trans_dist(self):
@@ -109,6 +115,7 @@ class DAHSMM(object):
             s1.betal = ret.betal
             # うけとりたいものを追加するでいけると思う
 
+    #動作させる上で一番重たい部分
     def resample_letter_params(self):
         states_index = [0]
         hsmm = self.letter_hsmm
@@ -125,45 +132,66 @@ class DAHSMM(object):
 
             states_index.append(len(hsmm.states_list))
 
+        print "resample states parallel in letter."
         hsmm.resample_states_parallel()
-        likelihoods = hsmm.likelihoods()
-        state_count = {}
+        print "finished resample states parallel in letter."
+        likelihoods = np.array(hsmm.likelihoods())
 
+        #parallelable procedure
         for state, bound in enumerate(zip(states_index[:-1], states_index[1:])):
             staff = range(*bound)
             if len(staff) == 0:
                 self.word_list[state] = self.generate_word()
                 continue
+            elif len(staff) == 1:
+                self.word_list[state] = tuple(hsmm.states_list[staff[0]].stateseq_norep)
+                s = hsmm.states_list[staff[0]]
+                s.letterseq[:] = s.stateseq
+                continue
 
-            candidates = []
-            scores = []
-            for idx in staff:
-                rest = set(staff) - set([idx])
-                word = hsmm.states_list[idx].stateseq_norep
-                score = np.sum([hsmm.states_list[s].likelihood_block_word(0, len(hsmm.states_list[s].data), word) for s in rest]) + likelihoods[idx]
-                scores.append(score)
-                candidates.append(tuple(word))
+            words_list = [tuple(hsmm.states_list[s].stateseq_norep) for s in staff]
+            words_unique = list(set(words_list))
+            ref_array = [words_unique.index(word) for word in words_list]
 
+            print "word",state,"has",len(staff),"segments."
+            print "word",state,".   unique/all =",len(words_unique),"/",len(words_list)
 
-            resample_state_flag = len(set(candidates)) > 1
-            if resample_state_flag:
-                word_idx = sample_discrete(np.exp(scores))
-                sampleseq = candidates[word_idx]
-            else:
-                sampleseq = candidates[0]
+            if len(words_unique) == 1:
+                self.word_list[state] = words_unique[0]
+                for idx in staff:
+                    s = hsmm.states_list[idx]
+                    s.letterseq[:] = s.stateseq
+                continue
+
+            candidates = words_list
+            #scores = np.empty(len(staff))
+            cache_scores = np.empty((len(words_unique), len(words_list)))
+
+            #calculate likelihood
+            for i, word in enumerate(words_unique):
+                #parallelable procedure
+                for j, s in enumerate(staff):
+                    cache_scores[i, j] = hsmm.states_list[s].likelihood_block_word(0, len(hsmm.states_list[s].data), word)
+            cache_scores_matrix = cache_scores[ref_array]
+            for i in range(len(staff)):
+                cache_scores_matrix[i,i] = 0.0
+            #cache_scores_matrix[np.identity(len(staff), dtype=bool)] = 0.0
+            scores = np.sum(cache_scores_matrix, axis=1) + likelihoods[staff[0]:staff[-1]+1]
+
+            word_idx = sample_discrete(np.exp(scores))
+            sampleseq = candidates[word_idx]
 
             self.word_list[state] = tuple(sampleseq)
             for idx in staff:
                 s = hsmm.states_list[idx]
                 s.letterseq[:] = s.stateseq
-                word = tuple(s.stateseq_norep)
+                #word = tuple(s.stateseq_norep)
 
         hsmm.resample_trans_distn()
         hsmm.resample_init_state_distn()
         hsmm.resample_dur_distns()
         hsmm.resample_obs_distns()
         self.resample_length_dist()
-
 
     def resample_length_dist(self):
         self.length_dist.resample(np.array(map(len, self.word_list)))

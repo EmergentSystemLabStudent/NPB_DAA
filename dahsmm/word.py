@@ -12,23 +12,23 @@ class LLStates(HSMMStatesEigen):
         tsize = T - start
         aBl = self.aBl
         aDl = self.aDl
+        rev_aDl = aDl[::-1]
         len_word = len(word)
         self._cache_alphal = alphal = np.ones((tsize, len_word)) * -np.inf
 
+        if tsize-len_word+1 <= 0:
+            return alphal[-1, -1]
+
+        cumsum_aBl = np.empty(tsize-len_word+1)
+
         for j, l in enumerate(word):
-            for t in range(tsize - len_word + j +1):
-                if j == 0:
-                    alphal[t, j] = np.sum(aBl[start:start+t+1, l]) + aDl[t, l]
-                elif j > t:
-                    alphal[t, j] = -np.inf
-                    continue
-                else:
-                    alphal[t, j] = np.logaddexp.reduce([
-                        np.sum(aBl[start+t+1-d:start+t+1, l]) + \
-                        aDl[d, l] + \
-                        alphal[t - d, j - 1]
-                        for d  in range(1, t + 1)
-                    ])
+            if j == 0:
+                alphal[:tsize-len_word+1, j] = np.cumsum(aBl[start:start+tsize-len_word+1, l]) + aDl[:tsize-len_word+1, l]
+            else:
+                cumsum_aBl[:] = 0.0
+                for t in range(j, tsize - len_word + j + 1):
+                    cumsum_aBl[:t-j+1] += aBl[start+t, l]
+                    alphal[t, j] = np.logaddexp.reduce(cumsum_aBl[:t-j+1] + rev_aDl[-t+j-1:, l] + alphal[:t-j+1, j-1])
 
         return alphal[-1, -1]
 

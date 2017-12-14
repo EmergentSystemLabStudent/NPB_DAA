@@ -2,7 +2,7 @@ import numpy as np
 from pyhsmm.util.stats import sample_discrete
 from pyhsmm.util.general import rle
 
-class HSMMState:
+class HSMMState(object):
     def __init__(self, data, model):
         self.data = np.asarray(data)
         self.model = model
@@ -124,6 +124,10 @@ class HSMMState:
             word = self.model.word_list[state]
             dur = len(word) - 1
 
+            self.likelihood_block_word(idx, T, word)
+            cache_loglikelihood = self._cache_alphal[:, -1]
+            cache_mess_term = np.exp(cache_loglikelihood + betal[idx:T, state] - betastarl[idx, state])
+
             while durprob > 0:
                 p_d_prior = aD[dur, state] if dur < T else 1.
                 assert not np.isnan(p_d_prior)
@@ -134,9 +138,11 @@ class HSMMState:
                     continue
 
                 if idx + dur < T:
-                    loglikelihood = self.likelihood_block_word(idx, idx+dur+1, word)
-                    mess_term = np.exp(loglikelihood + betal[idx+dur, state] - betastarl[idx, state])
-                    p_d = mess_term * p_d_prior
+                    #loglikelihood = self.likelihood_block_word(idx, idx+dur+1, word)
+                    #mess_term = np.exp(loglikelihood + betal[idx+dur, state] - betastarl[idx, state])
+                    #mess_term = np.exp(cache_loglikelihood[dur] + betal[idx+dur, state] - betastarl[idx, state])
+                    #p_d = mess_term * p_d_prior
+                    p_d = cache_mess_term[dur] * p_d_prior
                     assert not np.isnan(p_d)
                     durprob -= p_d
                     dur += 1
@@ -155,7 +161,7 @@ class HSMMState:
     def cumulative_likelihoods(self, start, stop):
         T = min(self.T, stop)
         tsize = T - start
-        ret = np.zeros((tsize, self.model.state_dim))
+        ret = np.ones((tsize, self.model.state_dim)) * -np.inf
 
         for state, word in enumerate(self.model.word_list):
             self.likelihood_block_word(start, stop, word)
@@ -168,18 +174,22 @@ class HSMMState:
         T = min(self.T, stop)
         tsize = T - start
         aBl = self.aBl
+        dl = self.dl
+        rev_dl = dl[::-1]
         len_word = len(word)
         self._cache_alphal = alphal = np.ones((tsize, len_word)) * -np.inf
 
+        if tsize-len_word+1 <= 0:
+            return alphal[-1, -1]
+
+        cumsum_aBl = np.empty(tsize-len_word+1)
+
         for j, l in enumerate(word):
-            for t in range(j, tsize - len_word + j + 1):
-                if j == 0:
-                    alphal[t, j] = np.sum(aBl[start:start+t+1, l]) + self.dl[t, l]
-                else:
-                    alphal[t, j] = np.logaddexp.reduce([
-                        np.sum(aBl[start+t-d:start+t+1, l]) + \
-                        self.dl[d, l] + \
-                        alphal[t - d - 1, j - 1]
-                        for d  in range(t + 1)
-                    ])
+            if j == 0:
+                alphal[:tsize-len_word+1, j] = np.cumsum(aBl[start:start+tsize-len_word+1, l]) + dl[:tsize-len_word+1, l]
+            else:
+                cumsum_aBl[:] = 0.0
+                for t in range(j, tsize - len_word + j + 1):
+                    cumsum_aBl[:t-j+1] += aBl[start+t, l]
+                    alphal[t, j] = np.logaddexp.reduce(cumsum_aBl[:t-j+1] + rev_dl[-t+j-1:, l] + alphal[:t-j+1, j-1])
         return alphal[-1, -1]

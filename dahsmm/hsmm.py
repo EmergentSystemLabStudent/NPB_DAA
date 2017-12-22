@@ -7,6 +7,7 @@ from pyhsmm.internals.initial_state import InitialState
 from pyhsmm.util import general
 from pyhsmm.util.stats import sample_discrete
 from states import HSMMState
+import time
 
 class DAHSMM(object):
     def __init__(self, hypparams, letter_hsmm, length_dist, obs_dists, dur_dists, parallel = True):
@@ -70,21 +71,30 @@ class DAHSMM(object):
             parallel.add_data(self.states_list[-1].data)
 
     def resample_model(self):
+        times = [0.0, 0.0, 0.0, 0.0, 0.0]
         if self.parallel:
-            print "resample states parallel"
+            st = time.time()
             self.resample_states_parallel()
+            times[0] = time.time() - st
         else:
-            print "resample states single"
             self.resample_states()
 
-        print "resample letter params"
+        st = time.time()
         self.resample_letter_params()
-        print "resample dur dists"
+        times[1] = time.time() - st
+        st = time.time()
         self.resample_dur_dists()
-        print "resample trans dist"
+        times[2] = time.time() - st
+        st = time.time()
         self.resample_trans_dist()
-        print "resample init dist"
+        times[3] = time.time() - st
+        st = time.time()
         self.resample_init_dist()
+        times[4] = time.time() - st
+
+        #print time stamps.
+        print "TS_resample:",str(times)[1:-1]
+
 
     def resample_trans_dist(self):
         self.trans_dists.resample(np.array([[state for (state, _) in s.state_ranges] for s in self.states_list]))
@@ -115,7 +125,6 @@ class DAHSMM(object):
             s1.betal = ret.betal
             # うけとりたいものを追加するでいけると思う
 
-    #動作させる上で一番重たい部分
     def resample_letter_params(self):
         states_index = [0]
         hsmm = self.letter_hsmm
@@ -132,14 +141,14 @@ class DAHSMM(object):
 
             states_index.append(len(hsmm.states_list))
 
-        print "resample states parallel in letter."
         hsmm.resample_states_parallel()
-        print "finished resample states parallel in letter."
         likelihoods = np.array(hsmm.likelihoods())
 
         #parallelable procedure
         for state, bound in enumerate(zip(states_index[:-1], states_index[1:])):
             staff = range(*bound)
+            print "word",state,"has",len(staff),"segments."
+
             if len(staff) == 0:
                 self.word_list[state] = self.generate_word()
                 continue
@@ -153,7 +162,6 @@ class DAHSMM(object):
             words_unique = list(set(words_list))
             ref_array = [words_unique.index(word) for word in words_list]
 
-            print "word",state,"has",len(staff),"segments."
             print "word",state,".   unique/all =",len(words_unique),"/",len(words_list)
 
             if len(words_unique) == 1:
@@ -164,18 +172,19 @@ class DAHSMM(object):
                 continue
 
             candidates = words_list
-            #scores = np.empty(len(staff))
             cache_scores = np.empty((len(words_unique), len(words_list)))
 
             #calculate likelihood
+            st = time.time()
             for i, word in enumerate(words_unique):
                 #parallelable procedure
                 for j, s in enumerate(staff):
                     cache_scores[i, j] = hsmm.states_list[s].likelihood_block_word(0, len(hsmm.states_list[s].data), word)
+            en = time.time()
+            print "word",state,".   importance calc:",(en - st)
             cache_scores_matrix = cache_scores[ref_array]
             for i in range(len(staff)):
                 cache_scores_matrix[i,i] = 0.0
-            #cache_scores_matrix[np.identity(len(staff), dtype=bool)] = 0.0
             scores = np.sum(cache_scores_matrix, axis=1) + likelihoods[staff[0]:staff[-1]+1]
 
             word_idx = sample_discrete(np.exp(scores))

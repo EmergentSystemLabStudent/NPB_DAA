@@ -138,10 +138,6 @@ class HSMMState(object):
                     continue
 
                 if idx + dur < T:
-                    #loglikelihood = self.likelihood_block_word(idx, idx+dur+1, word)
-                    #mess_term = np.exp(loglikelihood + betal[idx+dur, state] - betastarl[idx, state])
-                    #mess_term = np.exp(cache_loglikelihood[dur] + betal[idx+dur, state] - betastarl[idx, state])
-                    #p_d = mess_term * p_d_prior
                     p_d = cache_mess_term[dur] * p_d_prior
                     assert not np.isnan(p_d)
                     durprob -= p_d
@@ -183,13 +179,11 @@ class HSMMState(object):
             return alphal[-1, -1]
 
         cumsum_aBl = np.empty(tsize-len_word+1)
-
-        for j, l in enumerate(word):
-            if j == 0:
-                alphal[:tsize-len_word+1, j] = np.cumsum(aBl[start:start+tsize-len_word+1, l]) + dl[:tsize-len_word+1, l]
-            else:
-                cumsum_aBl[:] = 0.0
-                for t in range(j, tsize - len_word + j + 1):
-                    cumsum_aBl[:t-j+1] += aBl[start+t, l]
-                    alphal[t, j] = np.logaddexp.reduce(cumsum_aBl[:t-j+1] + rev_dl[-t+j-1:, l] + alphal[:t-j+1, j-1])
+        alphal[:tsize-len_word+1, 0] = np.cumsum(aBl[start:start+tsize-len_word+1, word[0]]) + dl[:tsize-len_word+1, word[0]]
+        cache_range = range(tsize - len_word + 1)
+        for j, l in enumerate(word[1:]):
+            cumsum_aBl[:] = 0.0
+            for t in cache_range:
+                cumsum_aBl[:t+1] += aBl[start+t+j+1, l]
+                alphal[t+j+1, j+1] = np.logaddexp.reduce(cumsum_aBl[:t+1] + rev_dl[-t-1:, l] + alphal[:t+1, j])
         return alphal[-1, -1]

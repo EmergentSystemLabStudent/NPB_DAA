@@ -185,5 +185,5 @@ class HSMMState(object):
             cumsum_aBl[:] = 0.0
             for t in cache_range:
                 cumsum_aBl[:t+1] += aBl[start+t+j+1, l]
-                alphal[t+j+1, j+1] = np.logaddexp.reduce(cumsum_aBl[:t+1] + rev_dl[-t-1:, l] + alphal[:t+1, j])
+                alphal[t+j+1, j+1] = np.logaddexp.reduce(cumsum_aBl[:t+1] + rev_dl[-t-1:, l] + alphal[j:t+j+1, j])
         return alphal[-1, -1]

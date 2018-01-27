@@ -175,11 +175,17 @@ class DAHSMM(object):
             cache_scores = np.empty((len(words_unique), len(words_list)))
 
             #calculate likelihood
+            staff_range = range(len(staff))
             st = time.time()
             for i, word in enumerate(words_unique):
                 #parallelable procedure
-                for j, s in enumerate(staff):
-                    cache_scores[i, j] = hsmm.states_list[s].likelihood_block_word(0, len(hsmm.states_list[s].data), word)
+                if ref_array.count(i) is 1:
+                    range_tmp = staff_range[:]#copy
+                    del range_tmp[ref_array.index(i)]
+                else:
+                    range_tmp = staff_range
+                for j in range_tmp:
+                    cache_scores[i, j] = hsmm.states_list[staff[j]].likelihood_block_word(0, len(hsmm.states_list[staff[j]].data), word)
             en = time.time()
             print "word",state,".   importance calc:",(en - st)
             cache_scores_matrix = cache_scores[ref_array]
@@ -187,6 +193,7 @@ class DAHSMM(object):
                 cache_scores_matrix[i,i] = 0.0
             scores = np.sum(cache_scores_matrix, axis=1) + likelihoods[staff[0]:staff[-1]+1]
 
+            assert (np.exp(scores) >=0).all(), cache_scores_matrix
             word_idx = sample_discrete(np.exp(scores))
             sampleseq = candidates[word_idx]
 

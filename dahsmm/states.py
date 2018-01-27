@@ -157,7 +157,7 @@ class HSMMState(object):
     def cumulative_likelihoods(self, start, stop):
         T = min(self.T, stop)
         tsize = T - start
-        ret = np.ones((tsize, self.model.state_dim)) * -np.inf
+        ret = np.empty((tsize, self.model.state_dim))
 
         for state, word in enumerate(self.model.word_list):
             self.likelihood_block_word(start, stop, word)

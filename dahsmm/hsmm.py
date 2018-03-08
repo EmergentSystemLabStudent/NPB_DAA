@@ -93,7 +93,7 @@ class DAHSMM(object):
         times[4] = time.time() - st
 
         #print time stamps.
-        print "TS_resample:",str(times)[1:-1]
+        #print "TS_resample:",str(times)[1:-1]
 
 
     def resample_trans_dist(self):
@@ -147,7 +147,7 @@ class DAHSMM(object):
         #parallelable procedure
         for state, bound in enumerate(zip(states_index[:-1], states_index[1:])):
             staff = range(*bound)
-            print "word",state,"has",len(staff),"segments."
+            #print "word",state,"has",len(staff),"segments."
 
             if len(staff) == 0:
                 self.word_list[state] = self.generate_word()
@@ -162,7 +162,7 @@ class DAHSMM(object):
             words_unique = list(set(words_list))
             ref_array = [words_unique.index(word) for word in words_list]
 
-            print "word",state,".   unique/all =",len(words_unique),"/",len(words_list)
+            #print "word",state,".   unique/all =",len(words_unique),"/",len(words_list)
 
             if len(words_unique) == 1:
                 self.word_list[state] = words_unique[0]
@@ -184,10 +184,11 @@ class DAHSMM(object):
                     del range_tmp[ref_array.index(i)]
                 else:
                     range_tmp = staff_range
+
                 for j in range_tmp:
                     cache_scores[i, j] = hsmm.states_list[staff[j]].likelihood_block_word(0, len(hsmm.states_list[staff[j]].data), word)
             en = time.time()
-            print "word",state,".   importance calc:",(en - st)
+            #print "word",state,".   importance calc:",(en - st)
             cache_scores_matrix = cache_scores[ref_array]
             for i in range(len(staff)):
                 cache_scores_matrix[i,i] = 0.0

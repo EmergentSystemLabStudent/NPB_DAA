@@ -4,6 +4,16 @@ This is a Python implementation for Nonparametric Bayesian Double Articulation A
     
 This generative model is called hiererichel Dirichlet process hidden language model (HDP-HLM), which is obtained by extending the hierarchical Dirichlet process hidden semi-Markov model (HDP-HSMM) proposed by Johnson et al. An inference procedure for the HDP-HLM is derived using the blocked Gibbs sampler originally proposed for the HDP-HSMM.
 
+### Information of latent versions
+This code is an older version.
+The latest version is [HERE](https://github.com/RyoOzaki/npbdaa).
+(Ryo Ozaki's repository )
+We have removed the environment dependency and improved the processing speed with Cython.
+
+We are plan to merge Ryo Ozaki's repository into this repository.
+It may have another branch name.
+Thank you.
+
 # Description
 ・NPB_DAA/README - There is a NPB-DAA tutorial in PDF.(In Japanese. English version is coming soon.)
   

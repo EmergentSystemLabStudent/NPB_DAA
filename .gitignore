@@ -1,0 +1,9 @@
+*.pyc
+*.pyo
+/tags
+/.tags
+*.lprof
+/build
+*.so
+*.o
+deps/

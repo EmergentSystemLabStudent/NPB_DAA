@@ -60,8 +60,8 @@ except ImportError:
 ```
 1. Install pyhlm (this).
 ```
-$ git clone https://github.com/EmergentSystemLabStudent/NPB_DAA/ NPB-DAA
-$ cd NPB-DAA
+$ git clone https://github.com/EmergentSystemLabStudent/NPB_DAA/ NPB_DAA
+$ cd NPB_DAA
 $ python setup.py install
 ```
 

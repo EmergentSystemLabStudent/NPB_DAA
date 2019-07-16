@@ -102,7 +102,7 @@ if use_cython:
 
 # put it all together with a call to setup()
 setup(name='pyhlm',
-      version='1.0.0',
+      version='1.0.1',
       description="Bayesian inference in HLMs",
       author='Ryo Ozaki',
       author_email='ryo.ozaki@em.ci.ritsumei.ac.jp',

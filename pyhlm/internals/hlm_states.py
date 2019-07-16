@@ -257,10 +257,9 @@ def hlm_sample_forwards_log(likelihood_block_word_func, trans_matrix, pi_0, aDl,
     while t < T:
         logdomain = betastarl[t] - betastarl[t].max()
         nextstate_dist = np.exp(logdomain) * nextstate_unsmoothed
-        if (nextstate_dist == 0.).all():
-            nextstate_dist = np.exp(logdomain)
 
         state = sample_discrete(nextstate_dist)
+
         durprob = np.random.random()
         cache_mess_term = np.exp(likelihood_block_word_func(t, T, word_list[state]) + betal[t:T, state] - betastarl[t, state])
 

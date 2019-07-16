@@ -40,7 +40,8 @@ namespace internal_hsmm
 #endif
 
       //initialize.
-      ealphal.setConstant(-1.0*numeric_limits<Type>::infinity());
+      Type neg_inf = -1.0*numeric_limits<Type>::infinity();
+      ealphal.setConstant(neg_inf);
 
       Type ctmp = 0.0;
       for(int t=0; t<T-L+1; t++){
@@ -58,6 +59,9 @@ namespace internal_hsmm
           }
           cmax = result.head(t+1).maxCoeff();
           ealphal(t+j+1, j+1) = log((result.head(t+1) - cmax).exp().sum()) + cmax;
+          if(ealphal(t+j+1, j+1) != ealphal(t+j+1, j+1)){
+            ealphal(t+j+1, j+1) = neg_inf;
+          }
         }
       }
     }

@@ -1,5 +1,4 @@
 #%%
-import os
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
@@ -98,11 +97,8 @@ def _plot_discreate_sequence(true_data, title, sample_data, cmap=None, cmap2=Non
     plt.xticks(())
 
 #%%
-if not os.path.exists("figures"):
-    os.mkdir("figures")
-
-if not os.path.exists("summary_files"):
-    os.mkdir("summary_files")
+Path("figures").mkdir(exist_ok=True)
+Path("summary_files").mkdir(exist_ok=True)
 
 #%% config parse
 print("Loading model config...")

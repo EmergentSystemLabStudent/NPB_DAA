@@ -1,7 +1,7 @@
 import numpy as np
 
 from pyhsmm.util.general import list_split
-from pyhsmm.util.stats import sample_discrete
+from pyhsmm.util.stats import sample_discrete_from_log
 from pyhsmm.internals.transitions import WeakLimitHDPHMMTransitions
 from pyhsmm.internals.initial_state import HMMInitialState
 
@@ -69,7 +69,8 @@ class WeakLimitHDPHLMPython(object):
         letter_hsmm_params = self.letter_hsmm.params
         bigram_params = {**self.init_state_distn.params, "trans_matrix": self.trans_distn.trans_matrix}
         length_params = self.length_distn.params
-        return {"num_states": self.num_states, "word_list": self.word_list, "letter_hsmm": letter_hsmm_params, "word_length": length_params, "bigram": bigram_params}
+        word_dicts = {f"word({i})": np.array(word) for i, word in enumerate(self.word_list)}
+        return {"num_states": self.num_states, "word_dicts": word_dicts, "letter_hsmm": letter_hsmm_params, "word_length": length_params, "bigram": bigram_params}
 
     @property
     def hypparams(self):
@@ -104,7 +105,7 @@ class WeakLimitHDPHLMPython(object):
         self.letter_hsmm.resample_states(num_procs=num_procs)
         [letter_state.reflect_letter_stateseq() for letter_state in self.letter_hsmm.states_list]
         self.resample_words(num_procs=num_procs)
-        self.letter_hsmm.resample_parameters()
+        self.letter_hsmm.resample_parameters_by_sampled_words(self.word_list)
         self.resample_length_distn()
         self.resample_dur_distns()
         self.resample_trans_distn()
@@ -114,11 +115,12 @@ class WeakLimitHDPHLMPython(object):
 
     def resample_states(self, num_procs=0):
         if num_procs == 0:
-            [state.resample() for state in self.states_list]
+            for state in self.states_list:
+                state.resample()
         else:
             self._joblib_resample_states(self.states_list, num_procs)
 
-    def _joblib_resample_states(self,states_list, num_procs):
+    def _joblib_resample_states(self, states_list, num_procs):
         from joblib import Parallel, delayed
         from . import parallel
 
@@ -194,8 +196,7 @@ class WeakLimitHDPHLMPython(object):
             cache_scores_matrix[i, i] = 0.0
         scores = cache_scores_matrix.sum(axis=1) + likelihoods
 
-        assert (np.exp(scores) >= 0).all(), cache_scores_matrix
-        sampled_candi_idx = sample_discrete(np.exp(scores))
+        sampled_candi_idx = sample_discrete_from_log(scores)
         return candidates[sampled_candi_idx]
 
     def resample_length_distn(self):

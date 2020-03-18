@@ -43,7 +43,7 @@ class sdist(_sdist):
     def run(self):
         try:
             from Cython.Build import cythonize
-            cythonize(os.path.join('pyhlm','**','*.pyx'))
+            cythonize(os.path.join('pyhlm','**','*.pyx'), compiler_directives={'language_level' : "3"})
         except:
             warn('Failed to generate extension files from Cython sources')
         finally:
@@ -96,13 +96,13 @@ ext_modules = [
 if use_cython:
     from Cython.Build import cythonize
     try:
-        ext_modules = cythonize(extension_pathspec)
+        ext_modules = cythonize(extension_pathspec, compiler_directives={'language_level' : "3"})
     except:
         warn('Failed to generate extension module code from Cython files')
 
 # put it all together with a call to setup()
 setup(name='pyhlm',
-      version='1.0.1',
+      version='1.0.3',
       description="Bayesian inference in HLMs",
       author='Ryo Ozaki',
       author_email='ryo.ozaki@em.ci.ritsumei.ac.jp',

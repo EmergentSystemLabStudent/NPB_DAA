@@ -13,8 +13,8 @@ do
   esac
 done
 
-sh runner.sh -l ${label} -b ${begin} -e ${end}
+bash runner.sh -l ${label} -b ${begin} -e ${end}
 
-sh summary_runner.sh -l ${label}
+bash summary_runner.sh -l ${label}
 
-sh clean.sh
+bash clean.sh

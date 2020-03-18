@@ -36,32 +36,19 @@ $ git clone https://github.com/mattjj/pybasicbayes
 $ cd pybasicbayes
 $ python setup.py install
 ```
-If you use latest scipy, please careful that the scipy.misc.logsumexp function moved to scipy.special.logsumexp.
-Therefore, I recommend that change the import instruction as follows.
-```
-try:
-    from scipy.special import logsumexp
-except ImportError:
-    from scipy.misc import logsumexp  # removed in scipy 0.19.0
-```
 1. Install pyhsmm.
 ```
-$ git clone https://github.com/mattjj/pyhsmm
+$ git clone https://github.com/RyoOzaki/pyhsmm
 $ cd pyhsmm
 $ python setup.py install
 ```
-If you use latest scipy, please careful that the scipy.misc.logsumexp function moved to scipy.special.logsumexp.
-Therefore, I recommend that change the import instruction as follows.
-```
-try:
-    from scipy.special import logsumexp
-except ImportError:
-    from scipy.misc import logsumexp  # removed in scipy 0.19.0
-```
+The repository of pyhsmm was forked and updated by Ryo Ozaki.
+If you want to install pyhsmm of master repository, please go to https://github.com/mattjj/pyhsmm
+But, the master repository's codes include some bugs in cython codes.
 1. Install pyhlm (this).
 ```
-$ git clone https://github.com/EmergentSystemLabStudent/NPB_DAA/ NPB_DAA
-$ cd NPB_DAA
+$ git clone https://github.com/EmergentSystemLabStudent/NPB_DAA npbdaa
+$ cd npbdaa
 $ python setup.py install
 ```
 

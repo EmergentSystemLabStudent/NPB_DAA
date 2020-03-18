@@ -14,6 +14,9 @@ do
 done
 
 mkdir -p ${label}
+cp -ru DATA/ ${label}/
+cp -ru LABEL/ ${label}/
+cp -ru hypparams/ ${label}/
 
 mkdir -p results
 mkdir -p parameters
@@ -25,12 +28,13 @@ do
 
   i_str=$( printf '%02d' $i )
   rm -f results/*
-  rm -f parameters/*
+  rm -rf parameters/*
   rm -f summary_files/*
   rm -f log.txt
+  touch log.txt
 
   echo "#!/bin/bash" > continue.sh
-  echo "sh runner.sh -l ${label} -b ${i} -e ${end}" >> continue.sh
+  echo "bash runner.sh -l ${label} -b ${i} -e ${end}" >> continue.sh
 
   python pyhlm_sample.py | tee log.txt
 
@@ -43,6 +47,6 @@ do
 done
 
 rm -f results/*
-rm -f parameters/*
+rm -rf parameters/*
 rm -f summary_files/*
 rm -f log.txt

@@ -1,25 +1,27 @@
 #%%
-import sys
-import os
 import numpy as np
 import matplotlib.pyplot as plt
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+from pathlib import Path
+import re
 
 #%%
-label = sys.argv[1]
-dirs = sys.argv[2:]
-dirs.sort()
+parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
+parser.add_argument("--result_dir", type=Path, required=True)
+args = parser.parse_args()
 
 #%%
-if not os.path.exists("figures"):
-    os.mkdir("figures")
+dirs = [dir for dir in args.result_dir.iterdir() if dir.is_dir() and re.match(r"^[0-9]+$", dir.stem)]
+dirs.sort(key=lambda dir: dir.stem)
 
-if not os.path.exists("summary_files"):
-    os.mkdir("summary_files")
+#%%
+Path("figures").mkdir(exist_ok=True)
+Path("summary_files").mkdir(exist_ok=True)
 
 #%%
 print("Initialize variables....")
 N = len(dirs)
-tmp = np.loadtxt(label + "/" +  dirs[0] + "/summary_files/resample_times.txt")
+tmp = np.loadtxt(dirs[0] / "summary_files/resample_times.txt")
 T = tmp.shape[0]
 
 resample_times  = np.empty((N, T))
@@ -28,9 +30,9 @@ print("Done!")
 
 #%%
 print("Loading results....")
-for i, path in enumerate(dirs):
-    resample_times[i] = np.loadtxt(label + "/" + path + "/summary_files/resample_times.txt")
-    log_likelihoods[i] = np.loadtxt(label + "/" + path + "/summary_files/log_likelihood.txt")
+for i, dir in enumerate(dirs):
+    resample_times[i] = np.loadtxt(dir / "summary_files/resample_times.txt")
+    log_likelihoods[i] = np.loadtxt(dir / "summary_files/log_likelihood.txt")
 print("Done!")
 
 #%%

@@ -19,7 +19,7 @@ cdef extern from "hlm_messages.h":
             Type *Al, Type *aDl,
             Type *aBl, Type* alDl,
             int[] words, int itrunc,
-            Type *betal, Type *betastarl) nogil except +
+            Type *betal, Type *betastarl) nogil
 
 def messages_backwards_log(
         floating[:,::1] aBl not None,
@@ -41,7 +41,6 @@ def messages_backwards_log(
         &aAl[0, 0], &aDl[0, 0],
         &aBl[0, 0], &alDl[0, 0],
         &words[0], itrunc,
-        &betal[0, 0], &betastarl[0, 0]
-    )
+        &betal[0, 0], &betastarl[0, 0])
 
     return betal, betastarl

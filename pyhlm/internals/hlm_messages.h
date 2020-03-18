@@ -20,7 +20,7 @@ namespace hlm
     void messages_backwards_log(
       int T, int N, int P, int Lmax, int Ls[], int cLs[],
       Type *Al, Type *aDl,
-      Type *aBl, Type* alDl,
+      Type *aBl, Type *alDl,
       int words[], int itrunc,
       Type *betal, Type *betastarl)
     {
@@ -66,18 +66,19 @@ namespace hlm
 
       for(int t=T-1; t>=0; t--){
         tsize = min(itrunc, T-t);
+        // calculate internal forward message
         for(int i=0; i<N; i++){
           ealphal.setConstant(neg_inf);
           ctmp = 0.0;
           for(int tt=0; tt<tsize-Ls[i]+1; tt++){
-            ctmp = ctmp + eaBl(t+tt, words[cLs[i]]);
+            ctmp += eaBl(t+tt, words[cLs[i]]);
             ealphal(tt, 0) = ctmp + ealDl(tt, words[cLs[i]]);
           }
           for(int j=0; j<Ls[i]-1; j++){
             sumsofar_alpha.setZero();
             for(int tt=0; tt<tsize-Ls[i]+1; tt++){
               for(int tau=0; tau<=tt; tau++){
-                sumsofar_alpha(tau) = sumsofar_alpha(tau) + eaBl(t+tt+j+1, words[cLs[i]+j+1]);
+                sumsofar_alpha(tau) += eaBl(t+tt+j+1, words[cLs[i]+j+1]);
                 result_alpha(tau) = sumsofar_alpha(tau) + ealDl(tt-tau, words[cLs[i]+j+1]) + ealphal(j+tau, j);
               }
               cmax = result_alpha.head(tt+1).maxCoeff();
@@ -89,6 +90,7 @@ namespace hlm
           }
           cum_ealphal.col(i) = ealphal.col(Ls[i]-1);
         }
+        // untill here (internal forward message)
 
         for(int tau=0; tau<tsize; tau++){
           result = ebetal.row(t+tau) + cum_ealphal.row(tau) + eaDl.row(tau);

@@ -111,7 +111,7 @@ class WeakLimitHDPHLMStatesPython(object):
         self.clear_caches()
         betal, betastarl, normalizerl = self.messages_backwards()
         self._normalizer = normalizerl
-        return self.sample_forwards(betal, betastarl), normalizerl
+        self.sample_forwards(betal, betastarl)
 
     def messages_backwards(self):
         aDl = self.aDl
@@ -156,7 +156,6 @@ class WeakLimitHDPHLMStatesPython(object):
         self._stateseq = stateseq
         self._stateseq_norep = stateseq_norep
         self._durations_censored = durations_censored
-        return self.stateseq, self.stateseq_norep, self.durations_censored
 
     def clear_caches(self):
         self._aBl = None
